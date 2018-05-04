@@ -1,11 +1,9 @@
 extern crate chrono;
 extern crate serde;
-extern crate bincode;
 
 use chrono::prelude::{Date, DateTime, Utc};
 
 use std::convert::From;
-
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Key(pub Vec<u8>);
@@ -57,7 +55,7 @@ impl From<Date<Utc>> for Key {
     }
 }
 
-// Users of this macro must have db::Key in scope.
+/// Users of this macro must have keyz::Key in scope.
 #[macro_export]
 macro_rules! make_key {
     () => (
@@ -71,12 +69,10 @@ macro_rules! make_key {
     );
 }
 
-
 #[cfg(test)]
 mod test {
     #[test]
     fn test_make_key() {
-
         use super::*;
         use std::convert::From;
 
@@ -90,9 +86,9 @@ mod test {
         // joinable byte-level representation of a sequence of allowed types.
 
         // Date -> Key
-        let  date = Utc.ymd(2016, 11, 8);
+        let date = Utc.ymd(2016, 11, 8);
         let key2 = make_key!(date, "hello");
-        let expected2 = make_key!(date.and_hms(0,0,0), "hello");
+        let expected2 = make_key!(date.and_hms(0, 0, 0), "hello");
         assert_eq!(key2, expected2);
     }
 }

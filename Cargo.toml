@@ -6,4 +6,3 @@ authors = ["Coleman McFarland <coleman.mcfarland@gmail.com>"]
 [dependencies]
 chrono = "*"
 serde = "*"
-bincode = "*"
