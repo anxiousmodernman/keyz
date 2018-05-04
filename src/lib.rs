@@ -22,6 +22,12 @@ impl Key {
     }
 }
 
+impl From<Key> for Vec<u8> {
+    fn from(val: Key) -> Self {
+        val.0
+    }
+}
+
 impl<'a> From<&'a str> for Key {
     fn from(val: &str) -> Self {
         Key(val.as_bytes().to_vec())
