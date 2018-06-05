@@ -1,7 +1,7 @@
 extern crate chrono;
 extern crate serde;
 
-use chrono::prelude::{Date, DateTime, Utc};
+use chrono::prelude::{Date, DateTime, NaiveDate, Utc};
 
 use std::convert::From;
 
@@ -61,6 +61,13 @@ impl From<Date<Utc>> for Key {
     }
 }
 
+impl From<NaiveDate> for Key {
+    fn from(val: NaiveDate) -> Self {
+        let dt = Date::<Utc>::from_utc(val, Utc);
+        Key(dt.and_hms(0, 0, 0).to_rfc3339().as_bytes().to_vec())
+    }
+}
+
 /// Users of this macro must have keyz::Key in scope.
 #[macro_export]
 macro_rules! make_key {
@@ -77,19 +84,16 @@ macro_rules! make_key {
 
 #[cfg(test)]
 mod test {
+    use chrono::prelude::*;
     #[test]
     fn test_make_key() {
         use super::*;
         use std::convert::From;
 
         // &str -> Key
-        let mut key = make_key!("hello", String::from("world"));
-        let mut expected: Vec<u8> = Vec::from("helloworld".as_bytes());
+        let key = make_key!("hello", String::from("world"));
+        let expected: Vec<u8> = Vec::from("helloworld".as_bytes());
         assert_eq!(key, Key(expected));
-
-        // NOTE: In the case of Date/DateTime, unable to get proper key equality without macro. We
-        // will probably need to get stricter about how we serialize Key. We need a predictable,
-        // joinable byte-level representation of a sequence of allowed types.
 
         // Date -> Key
         let date = Utc.ymd(2016, 11, 8);
